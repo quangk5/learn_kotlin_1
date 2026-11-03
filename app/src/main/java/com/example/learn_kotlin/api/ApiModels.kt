@@ -14,6 +14,11 @@ data class RegisterRequest(
     val phone: String? = null
 )
 
+data class VerifyOtpRequest(
+    val email: String,
+    val otp: String
+)
+
 data class RefreshTokenRequest(
     val refreshToken: String
 )

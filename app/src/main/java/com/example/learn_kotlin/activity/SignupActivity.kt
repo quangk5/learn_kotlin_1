@@ -64,19 +64,13 @@ class SignupActivity : AppCompatActivity() {
                 val response = ApiClient.authApi(this@SignupActivity).register(
                     RegisterRequest(fullName = fullName, email = email, password = password)
                 )
-                val tokens = response.data
-                if (!response.success || tokens?.accessToken.isNullOrBlank()) {
+                if (!response.success) {
                     throw IllegalStateException(response.message ?: "Đăng ký thất bại.")
                 }
 
-                Toast.makeText(
-                    this@SignupActivity,
-                    "Đăng ký thành công. Vui lòng đăng nhập.",
-                    Toast.LENGTH_SHORT
-                ).show()
                 startActivity(
-                    Intent(this@SignupActivity, LoginActivity::class.java)
-                        .putExtra(LoginActivity.EXTRA_EMAIL, email)
+                    Intent(this@SignupActivity, VerifyOtpActivity::class.java)
+                        .putExtra(VerifyOtpActivity.EXTRA_EMAIL, email)
                 )
                 finish()
             } catch (cancelled: CancellationException) {
