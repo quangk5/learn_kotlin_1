@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tablet / điện thoại gập khi mở ra (smallest width >= 600dp) -->
+    <dimen name="screen_padding">32dp</dimen>
+    <dimen name="content_max_width">560dp</dimen>
+    <dimen name="title_spacing">48dp</dimen>
+    <dimen name="field_spacing">16dp</dimen>
+    <dimen name="button_min_height">56dp</dimen>
+
+    <dimen name="text_size_title">36sp</dimen>
+    <dimen name="text_size_welcome">28sp</dimen>
+    <dimen name="text_size_home">30sp</dimen>
+</resources>

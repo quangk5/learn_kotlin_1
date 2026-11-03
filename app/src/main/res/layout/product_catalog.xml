@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#F7F6FA" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp">
+        <TextView android:id="@+id/catalogBack" android:layout_width="48dp" android:layout_height="48dp" android:gravity="center" android:text="‹" android:textColor="#302D36" android:textSize="32sp" android:contentDescription="Quay lại" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Khám phá sản phẩm" android:textColor="#24212B" android:textSize="18sp" android:textStyle="bold" />
+        <TextView android:id="@+id/catalogCart" android:layout_width="48dp" android:layout_height="48dp" android:gravity="center" android:text="🛒" android:textSize="20sp" android:contentDescription="Giỏ hàng" />
+    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp" android:hint="Tìm sản phẩm"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/catalogSearch" android:layout_width="match_parent" android:layout_height="wrap_content" android:imeOptions="actionSearch" android:inputType="text" android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:scrollbars="none">
+        <LinearLayout android:id="@+id/catalogCategoryContainer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingHorizontal="16dp" />
+    </HorizontalScrollView>
+    <TextView android:id="@+id/catalogStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="12dp" android:textColor="#777480" android:textSize="13sp" android:visibility="gone" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scrollbars="none">
+        <LinearLayout android:id="@+id/catalogProductContainer" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" />
+    </ScrollView>
+</LinearLayout>

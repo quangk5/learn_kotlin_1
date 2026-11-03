@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F7F6FA" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp">
+        <TextView android:id="@+id/checkoutBack" android:layout_width="48dp" android:layout_height="48dp" android:gravity="center" android:text="‹" android:textColor="#302D36" android:textSize="32sp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Xác nhận đơn hàng" android:textColor="#24212B" android:textSize="18sp" android:textStyle="bold" />
+    </LinearLayout>
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scrollbars="none">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Địa chỉ giao hàng" android:textColor="#24212B" android:textSize="17sp" android:textStyle="bold" />
+            <TextView android:id="@+id/checkoutAddressStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:text="Đang tải địa chỉ..." android:textColor="#777480" android:textSize="13sp" />
+            <RadioGroup android:id="@+id/checkoutAddressChoices" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/checkoutAddAddress" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginTop="8dp" android:text="+ Thêm địa chỉ mới" android:textAllCaps="false" app:cornerRadius="12dp" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Phương thức thanh toán" android:textColor="#24212B" android:textSize="17sp" android:textStyle="bold" />
+            <RadioGroup android:id="@+id/paymentMethodGroup" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:orientation="vertical">
+                <RadioButton android:id="@+id/paymentCod" android:layout_width="match_parent" android:layout_height="48dp" android:checked="true" android:text="Thanh toán khi nhận hàng (COD)" />
+                <RadioButton android:id="@+id/paymentVnpay" android:layout_width="match_parent" android:layout_height="48dp" android:text="VNPay" />
+                <RadioButton android:id="@+id/paymentMomo" android:layout_width="match_parent" android:layout_height="48dp" android:text="MoMo" />
+                <RadioButton android:id="@+id/paymentBanking" android:layout_width="match_parent" android:layout_height="48dp" android:text="Chuyển khoản" />
+            </RadioGroup>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:hint="Ghi chú đơn hàng" style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/checkoutNote" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="top" android:inputType="textMultiLine" android:minLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView android:id="@+id/checkoutStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="8dp" android:textColor="#B3261E" android:textSize="13sp" android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+    <com.google.android.material.button.MaterialButton android:id="@+id/checkoutSubmit" android:layout_width="match_parent" android:layout_height="54dp" android:layout_margin="16dp" android:text="Đặt hàng" android:textAllCaps="false" app:cornerRadius="14dp" />
+</LinearLayout>

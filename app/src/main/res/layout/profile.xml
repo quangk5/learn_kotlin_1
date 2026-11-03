@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F7F6FA" android:fillViewport="true" android:scrollbars="none">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+        <TextView android:id="@+id/profileBack" android:layout_width="48dp" android:layout_height="48dp" android:gravity="center" android:text="‹" android:textColor="#302D36" android:textSize="32sp" />
+        <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" app:cardBackgroundColor="#FFFFFF" app:cardCornerRadius="20dp" app:cardElevation="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+                <TextView android:id="@+id/profileAvatar" android:layout_width="64dp" android:layout_height="64dp" android:background="#EEE9FA" android:gravity="center" android:text="👤" android:textSize="28sp" />
+                <TextView android:id="@+id/profileName" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Đang tải tài khoản..." android:textColor="#24212B" android:textSize="21sp" android:textStyle="bold" />
+                <TextView android:id="@+id/profileEmail" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:textColor="#777480" android:textSize="14sp" />
+                <TextView android:id="@+id/profilePhone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="#777480" android:textSize="14sp" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/profileEditButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="44dp" android:layout_marginTop="12dp" android:text="Chỉnh sửa hồ sơ" android:textAllCaps="false" app:cornerRadius="12dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.button.MaterialButton android:id="@+id/profileAddressesButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="18dp" android:gravity="start|center_vertical" android:text="Sổ địa chỉ" android:textAllCaps="false" app:cornerRadius="14dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/profileOrdersButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="10dp" android:gravity="start|center_vertical" android:text="Đơn hàng của tôi" android:textAllCaps="false" app:cornerRadius="14dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/profilePasswordButton" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="10dp" android:gravity="start|center_vertical" android:text="Đổi mật khẩu" android:textAllCaps="false" app:cornerRadius="14dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/profileLogoutButton" android:layout_width="match_parent" android:layout_height="54dp" android:layout_marginTop="24dp" android:text="Đăng xuất" android:textAllCaps="false" app:backgroundTint="#FFF0F0" app:cornerRadius="14dp" android:textColor="#B3261E" />
+    </LinearLayout>
+</ScrollView>

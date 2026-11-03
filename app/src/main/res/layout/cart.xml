@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#F7F6FA" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp">
+        <TextView android:id="@+id/cartBack" android:layout_width="48dp" android:layout_height="48dp" android:gravity="center" android:text="‹" android:textColor="#302D36" android:textSize="32sp" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Giỏ hàng" android:textColor="#24212B" android:textSize="18sp" android:textStyle="bold" />
+        <TextView android:id="@+id/cartClear" android:layout_width="wrap_content" android:layout_height="48dp" android:gravity="center" android:paddingHorizontal="8dp" android:text="Xóa tất cả" android:textColor="#6846B8" android:textSize="13sp" />
+    </LinearLayout>
+    <TextView android:id="@+id/cartStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="12dp" android:textColor="#777480" android:textSize="14sp" android:visibility="gone" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scrollbars="none">
+        <LinearLayout android:id="@+id/cartItemsContainer" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" />
+    </ScrollView>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#FFFFFF" android:elevation="8dp" android:orientation="vertical" android:padding="16dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tạm tính" android:textColor="#625E6A" android:textSize="14sp" />
+            <TextView android:id="@+id/cartTotal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 ₫" android:textColor="#24212B" android:textSize="18sp" android:textStyle="bold" />
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/cartCheckout" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="12dp" android:text="Tiếp tục đặt hàng" android:textAllCaps="false" app:cornerRadius="14dp" />
+    </LinearLayout>
+</LinearLayout>
