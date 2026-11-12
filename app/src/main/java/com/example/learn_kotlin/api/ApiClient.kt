@@ -24,6 +24,8 @@ object ApiClient {
 
     fun orderApi(context: Context): OrderApi = retrofit(context).create(OrderApi::class.java)
 
+    fun paymentApi(context: Context): PaymentApi = retrofit(context).create(PaymentApi::class.java)
+
     fun profileApi(context: Context): ProfileApi = retrofit(context).create(ProfileApi::class.java)
 
     fun mediaApi(context: Context): MediaApi = retrofit(context).create(MediaApi::class.java)
@@ -57,7 +59,12 @@ object ApiClient {
                     requestPath == "/health" ||
                     requestPath.endsWith("/auth/login") ||
                     requestPath.endsWith("/auth/register") ||
-                    requestPath.endsWith("/auth/refresh-token")
+                    requestPath.endsWith("/auth/refresh-token") ||
+                    requestPath.endsWith("/auth/verify-otp") ||
+                    requestPath.endsWith("/auth/resend-verification-otp") ||
+                    requestPath.endsWith("/auth/forgot-password") ||
+                    requestPath.endsWith("/auth/verify-reset-otp") ||
+                    requestPath.endsWith("/auth/reset-password")
 
                 val token = if (isPublicCall) null else tokenStore.accessToken()
                 val authenticatedRequest = request.newBuilder().apply {

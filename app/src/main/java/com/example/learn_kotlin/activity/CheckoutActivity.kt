@@ -32,7 +32,7 @@ class CheckoutActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.checkout)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.checkout(this)))
         applySystemBarInsets(findViewById(android.R.id.content))
         findViewById<View>(R.id.checkoutBack).setOnClickListener { finish() }
         findViewById<View>(R.id.checkoutAddAddress).setOnClickListener {
@@ -108,9 +108,7 @@ class CheckoutActivity : AppCompatActivity() {
         }
         val paymentId = findViewById<RadioGroup>(R.id.paymentMethodGroup).checkedRadioButtonId
         val paymentMethod = when (paymentId) {
-            R.id.paymentVnpay -> "VNPAY"
-            R.id.paymentMomo -> "MOMO"
-            R.id.paymentBanking -> "BANKING"
+            R.id.paymentSepay -> "SEPAY"
             else -> "COD"
         }
         val note = findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.checkoutNote)
@@ -119,12 +117,22 @@ class CheckoutActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val response = orderApi.checkout(CheckoutRequest(addressId, paymentMethod, note))
-                if (!response.success) {
+                if (!response.isSuccessful) {
                     throw IllegalStateException(response.message ?: "Đặt hàng không thành công.")
                 }
                 val order = response.data
                     ?: throw IllegalStateException("Máy chủ chưa trả thông tin đơn hàng.")
                 val orderCode = order.orderCode.orEmpty()
+                if (paymentMethod == "SEPAY") {
+                    val orderId = order.id
+                    if (orderId.isNullOrBlank()) {
+                        throw IllegalStateException("Đơn hàng thiếu mã định danh, chưa thể tạo mã QR thanh toán.")
+                    }
+                    startActivity(Intent(this@CheckoutActivity, PaymentActivity::class.java)
+                        .putExtra(PaymentActivity.EXTRA_ORDER_ID, orderId))
+                    finish()
+                    return@launch
+                }
                 MaterialAlertDialogBuilder(this@CheckoutActivity)
                     .setTitle("Đặt hàng thành công")
                     .setMessage(if (orderCode.isBlank()) response.message.orEmpty() else "Mã đơn hàng: $orderCode")

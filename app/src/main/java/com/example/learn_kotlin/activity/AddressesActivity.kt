@@ -28,7 +28,7 @@ class AddressesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.addresses)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.addresses(this)))
         applySystemBarInsets(findViewById(android.R.id.content))
         findViewById<View>(R.id.addressesBack).setOnClickListener { finish() }
         findViewById<View>(R.id.addressAddButton).setOnClickListener {

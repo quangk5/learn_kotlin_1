@@ -16,6 +16,7 @@ import com.example.learn_kotlin.applySystemBarInsets
 import com.example.learn_kotlin.api.ApiClient
 import com.example.learn_kotlin.api.ChangePasswordRequest
 import com.example.learn_kotlin.api.ProfileUpdateRequest
+import com.example.learn_kotlin.api.LogoutRequest
 import com.example.learn_kotlin.api.UserProfileResponse
 import com.example.learn_kotlin.api.toUserMessage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -32,7 +33,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.profile)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.profile(this)))
         applySystemBarInsets(findViewById(android.R.id.content))
         tokenStore = TokenStore(this)
         findViewById<View>(R.id.profileBack).setOnClickListener { finish() }
@@ -41,6 +42,16 @@ class ProfileActivity : AppCompatActivity() {
         findViewById<View>(R.id.profileOrdersButton).setOnClickListener { startActivity(Intent(this, OrdersActivity::class.java)) }
         findViewById<View>(R.id.profilePasswordButton).setOnClickListener { changePassword() }
         findViewById<View>(R.id.profileLogoutButton).setOnClickListener { confirmLogout() }
+        bindBottomNavigation(
+            onHome = { openRootTab(MainActivity::class.java) },
+            onCategories = { openRootTab(ProductCatalogActivity::class.java) },
+            onAccount = {
+                val accountTab = findViewById<View>(R.id.navAccount)
+                accountTab.animate().scaleX(0.96f).scaleY(0.96f).setDuration(90).withEndAction {
+                    accountTab.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
+                }.start()
+            }
+        )
         loadProfile()
     }
 
@@ -124,7 +135,7 @@ class ProfileActivity : AppCompatActivity() {
             inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         val newPassword = EditText(this).apply {
-            hint = "Mật khẩu mới (ít nhất 6 ký tự)"
+            hint = "Mật khẩu mới (8–64 ký tự)"
             inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
         }
         MaterialAlertDialogBuilder(this)
@@ -134,8 +145,8 @@ class ProfileActivity : AppCompatActivity() {
             .setPositiveButton("Cập nhật") { _, _ ->
                 val old = oldPassword.text.toString()
                 val new = newPassword.text.toString()
-                if (old.isBlank() || new.length < 6) {
-                    Toast.makeText(this, "Kiểm tra mật khẩu hiện tại và mật khẩu mới (tối thiểu 6 ký tự).", Toast.LENGTH_LONG).show()
+                if (old.isBlank() || new.length !in 8..64) {
+                    Toast.makeText(this, "Mật khẩu mới phải có từ 8 đến 64 ký tự.", Toast.LENGTH_LONG).show()
                 } else submitPasswordChange(old, new)
             }
             .show()
@@ -167,7 +178,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun logout() {
         lifecycleScope.launch {
             try {
-                authApi.logout()
+                authApi.logout(LogoutRequest(tokenStore.refreshToken()))
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (error: Exception) {

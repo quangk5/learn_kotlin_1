@@ -35,7 +35,7 @@ class AddressFormActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.address_form)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.addressForm(this, !addressId.isNullOrBlank())))
         applySystemBarInsets(findViewById(android.R.id.content))
         findViewById<View>(R.id.addressFormBack).setOnClickListener { finish() }
         findViewById<View>(R.id.addressSaveButton).setOnClickListener { saveAddress() }

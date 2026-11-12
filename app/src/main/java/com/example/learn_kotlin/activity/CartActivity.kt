@@ -31,7 +31,7 @@ class CartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.cart)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.cart(this)))
         applySystemBarInsets(findViewById(android.R.id.content))
         findViewById<View>(R.id.cartBack).setOnClickListener { finish() }
         findViewById<View>(R.id.cartClear).setOnClickListener { clearCart() }

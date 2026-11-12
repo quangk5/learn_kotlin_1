@@ -91,7 +91,7 @@ internal class TokenAuthenticator(context: Context) : Authenticator {
             val envelope = runCatching { gson.fromJson<ApiResponse<TokenResponse>>(json, responseType) }
                 .getOrNull()
                 ?: return null
-            if (!envelope.success) {
+            if (!envelope.isSuccessful) {
                 tokenStore.clear()
                 return null
             }

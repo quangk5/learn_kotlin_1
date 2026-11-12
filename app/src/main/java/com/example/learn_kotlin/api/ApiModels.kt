@@ -15,9 +15,22 @@ data class RegisterRequest(
 )
 
 data class VerifyOtpRequest(
+    val otp: String,
     val email: String,
-    val otp: String
+    val password: String
 )
+
+data class ResendOtpRequest(val email: String)
+
+data class ForgotPasswordRequest(val email: String)
+
+data class VerifyResetOtpRequest(val identity: String, val otp: String)
+
+data class ResetPasswordRequest(val resetToken: String, val newPassword: String)
+
+data class ResetTokenResponse(val resetToken: String, val expiresIn: Long? = null)
+
+data class LogoutRequest(val refreshToken: String? = null)
 
 data class RefreshTokenRequest(
     val refreshToken: String
@@ -35,8 +48,12 @@ data class ApiResponse<T>(
     val code: Int? = null,
     val message: String? = null,
     val data: T? = null,
-    val timestamp: String? = null
-)
+    val timestamp: String? = null,
+    val error: String? = null
+) {
+    /** The backend's canonical success signal is code=1000. */
+    val isSuccessful: Boolean get() = code == 1000 || success
+}
 
 data class PageResponse<T>(
     val items: List<T>? = emptyList(),
@@ -176,6 +193,29 @@ data class CheckoutRequest(
     val addressId: String,
     val paymentMethod: String,
     val note: String? = null
+)
+
+data class PaymentQrResponse(
+    val orderId: String? = null,
+    val orderCode: String? = null,
+    val amount: Double? = null,
+    val paymentMethod: String? = null,
+    val paymentStatus: String? = null,
+    val bankName: String? = null,
+    val accountNumber: String? = null,
+    val accountHolder: String? = null,
+    val transferContent: String? = null,
+    val qrImageUrl: String? = null,
+    val paymentInstruction: String? = null
+)
+
+data class PaymentStatusResponse(
+    val orderId: String? = null,
+    val orderCode: String? = null,
+    val paymentStatus: String? = null,
+    val orderStatus: String? = null,
+    val paidAt: String? = null,
+    val sepayTransactionId: String? = null
 )
 
 data class OrderItemResponse(

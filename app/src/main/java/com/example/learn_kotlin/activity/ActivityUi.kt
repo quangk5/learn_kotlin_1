@@ -1,6 +1,7 @@
 package com.example.learn_kotlin.activity
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.material.card.MaterialCardView
+import androidx.appcompat.app.AppCompatActivity
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -57,5 +59,21 @@ internal fun Context.screenPadding(): Int = dp(16)
 
 internal fun LinearLayout.addSectionTitle(context: Context, title: String) {
     addView(context.bodyText(title, 17f, Color.rgb(36, 33, 43), true))
+}
+
+internal fun AppCompatActivity.openRootTab(destination: Class<out AppCompatActivity>) {
+    if (javaClass == destination) return
+    startActivity(Intent(this, destination).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP))
+    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+}
+
+internal fun AppCompatActivity.bindBottomNavigation(
+    onHome: () -> Unit,
+    onCategories: () -> Unit,
+    onAccount: () -> Unit
+) {
+    findViewById<android.view.View>(com.example.learn_kotlin.R.id.navHome)?.setOnClickListener { onHome() }
+    findViewById<android.view.View>(com.example.learn_kotlin.R.id.navCategories)?.setOnClickListener { onCategories() }
+    findViewById<android.view.View>(com.example.learn_kotlin.R.id.navAccount)?.setOnClickListener { onAccount() }
 }
 

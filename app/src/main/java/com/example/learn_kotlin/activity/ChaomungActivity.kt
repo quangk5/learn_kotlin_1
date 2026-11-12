@@ -13,7 +13,7 @@ class ChaomungActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-        setContentView(R.layout.chaomung)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.welcome(this)))
 
         applySystemBarInsets(findViewById(R.id.main))
 

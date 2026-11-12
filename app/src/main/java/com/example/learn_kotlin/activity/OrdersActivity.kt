@@ -26,7 +26,7 @@ class OrdersActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.orders)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.orders(this)))
         applySystemBarInsets(findViewById(android.R.id.content))
         findViewById<View>(R.id.ordersBack).setOnClickListener { finish() }
         loadOrders()

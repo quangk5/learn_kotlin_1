@@ -33,7 +33,7 @@ class ProductDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.product_detail)
+        setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.detail(this)))
         applySystemBarInsets(findViewById(android.R.id.content))
         findViewById<View>(R.id.detailBack).setOnClickListener { finish() }
         findViewById<View>(R.id.detailCart).setOnClickListener { openCart() }
