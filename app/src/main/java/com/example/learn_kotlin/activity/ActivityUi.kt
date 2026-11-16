@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -75,5 +76,39 @@ internal fun AppCompatActivity.bindBottomNavigation(
     findViewById<android.view.View>(com.example.learn_kotlin.R.id.navHome)?.setOnClickListener { onHome() }
     findViewById<android.view.View>(com.example.learn_kotlin.R.id.navCategories)?.setOnClickListener { onCategories() }
     findViewById<android.view.View>(com.example.learn_kotlin.R.id.navAccount)?.setOnClickListener { onAccount() }
+}
+
+internal class RootTabSwipeController(
+    context: Context,
+    private val onSwipe: (direction: Int) -> Unit
+) {
+    private val swipeThreshold = maxOf(
+        context.dp(64).toFloat(),
+        context.resources.displayMetrics.widthPixels * 0.8f
+    )
+    private var downX = 0f
+    private var downY = 0f
+
+    fun observe(event: MotionEvent) {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                downX = event.x
+                downY = event.y
+            }
+            MotionEvent.ACTION_UP -> {
+                val deltaX = event.x - downX
+                val deltaY = event.y - downY
+                if (kotlin.math.abs(deltaX) >= swipeThreshold && kotlin.math.abs(deltaX) > kotlin.math.abs(deltaY) * 1.3f) {
+                    onSwipe(if (deltaX < 0) 1 else -1)
+                }
+            }
+        }
+    }
+}
+
+internal fun AppCompatActivity.rootTabForSwipe(direction: Int, currentTab: Int) {
+    val tabs = listOf(MainActivity::class.java, ProductCatalogActivity::class.java, ProfileActivity::class.java)
+    val target = (currentTab + direction).coerceIn(0, tabs.lastIndex)
+    if (target != currentTab) openRootTab(tabs[target])
 }
 

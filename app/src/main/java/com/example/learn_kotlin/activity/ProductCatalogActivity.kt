@@ -34,6 +34,7 @@ import kotlinx.coroutines.withContext
 import java.net.URL
 
 class ProductCatalogActivity : AppCompatActivity() {
+    private var rootTabSwipeController: RootTabSwipeController? = null
     private val productApi by lazy { ApiClient.productApi(this) }
     private val categoryApi by lazy { ApiClient.categoryApi(this) }
     private val cartApi by lazy { ApiClient.cartApi(this) }
@@ -43,6 +44,7 @@ class ProductCatalogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.catalog(this)))
+        rootTabSwipeController = RootTabSwipeController(this) { rootTabForSwipe(it, 1) }
         applySystemBarInsets(findViewById(android.R.id.content))
         findViewById<View>(R.id.catalogBack).setOnClickListener { finish() }
         findViewById<View>(R.id.catalogCart).setOnClickListener { startActivity(android.content.Intent(this, CartActivity::class.java)) }
@@ -59,13 +61,22 @@ class ProductCatalogActivity : AppCompatActivity() {
             val submit = actionId == EditorInfo.IME_ACTION_SEARCH ||
                 (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP)
             if (submit) {
-                selectedCategoryId = null
-                loadProducts(field.text?.toString()?.trim()?.takeIf(String::isNotBlank), null)
+                val query = field.text?.toString()?.trim().orEmpty()
+                if (query.isNotBlank()) {
+                    startActivity(android.content.Intent(this, SearchActivity::class.java)
+                        .putExtra(SearchActivity.EXTRA_QUERY, query))
+                }
                 true
             } else false
         }
         loadCategories()
         loadProducts(null, null)
+    }
+
+    override fun dispatchTouchEvent(event: android.view.MotionEvent): Boolean {
+        val handled = super.dispatchTouchEvent(event)
+        rootTabSwipeController?.observe(event)
+        return handled
     }
 
     private fun loadCategories() {

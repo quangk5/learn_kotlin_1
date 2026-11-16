@@ -11,6 +11,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.content.Context
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -53,6 +55,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
+    private var rootTabSwipeController: RootTabSwipeController? = null
     private lateinit var tokenStore: TokenStore
     private lateinit var productApi: ProductApi
     private lateinit var categoryApi: CategoryApi
@@ -71,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.home(this)))
+        rootTabSwipeController = RootTabSwipeController(this) { rootTabForSwipe(it, 0) }
         applySystemBarInsets(findViewById(android.R.id.content))
 
         tokenStore = TokenStore(this)
@@ -96,6 +100,12 @@ class MainActivity : AppCompatActivity() {
             findViewById<LinearLayout>(R.id.main).requestFocus()
         }
         loadHomeData()
+    }
+
+    override fun dispatchTouchEvent(event: android.view.MotionEvent): Boolean {
+        val handled = super.dispatchTouchEvent(event)
+        rootTabSwipeController?.observe(event)
+        return handled
     }
 
     override fun onResume() {
@@ -292,7 +302,10 @@ class MainActivity : AppCompatActivity() {
             val searchAction = actionId == EditorInfo.IME_ACTION_SEARCH
             val enterKey = event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP
             if (searchAction || enterKey) {
-                searchProducts(keyword = input.text?.toString()?.trim()?.takeIf(String::isNotBlank))
+                val query = input.text?.toString()?.trim().orEmpty()
+                if (query.isNotBlank()) {
+                    startActivity(Intent(this, SearchActivity::class.java).putExtra(SearchActivity.EXTRA_QUERY, query))
+                }
                 true
             } else false
         }
@@ -302,9 +315,7 @@ class MainActivity : AppCompatActivity() {
         val quickSearches = findViewById<LinearLayout>(R.id.quickSearchItems)
         listOf("Tai nghe", "Thời trang", "Làm đẹp", "Gia dụng").forEachIndexed { index, term ->
             (quickSearches.getChildAt(index) as? View)?.setOnClickListener {
-                findViewById<EditText>(R.id.searchEditText).setText(term)
-                searchProducts(keyword = term)
-                scrollToProducts()
+                startActivity(Intent(this, SearchActivity::class.java).putExtra(SearchActivity.EXTRA_QUERY, term))
             }
         }
         findViewById<View>(R.id.favoriteFilterButton).setOnClickListener {
@@ -335,6 +346,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupHeaderActions() {
+        findViewById<View>(R.id.searchToggleButton).setOnClickListener {
+            startActivity(Intent(this, SearchActivity::class.java))
+        }
+        findViewById<View>(R.id.searchCloseButton).setOnClickListener {
+            findViewById<EditText>(R.id.searchEditText).text?.clear()
+        }
         findViewById<View>(R.id.notificationButton).setOnClickListener {
             toast("Thông báo sẽ được bật khi API thông báo được cấu hình.")
         }
@@ -344,6 +361,23 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.viewAllCategories).setOnClickListener { scrollToCategories() }
         findViewById<View>(R.id.viewAllProducts).setOnClickListener {
             startActivity(Intent(this, ProductCatalogActivity::class.java))
+        }
+    }
+
+    private fun setSearchVisible(visible: Boolean) {
+        val searchBar = findViewById<View>(R.id.homeSearchBar)
+        val searchInput = findViewById<EditText>(R.id.searchEditText)
+        searchBar.visibility = if (visible) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.searchToggleIcon).visibility = if (visible) View.GONE else View.VISIBLE
+        findViewById<View>(R.id.searchToggleClose).visibility = if (visible) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.searchToggleButton).contentDescription = if (visible) "Đóng tìm kiếm" else "Mở tìm kiếm"
+        val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (visible) {
+            searchInput.requestFocus()
+            searchInput.post { keyboard.showSoftInput(searchInput, InputMethodManager.SHOW_IMPLICIT) }
+        } else {
+            keyboard.hideSoftInputFromWindow(searchInput.windowToken, 0)
+            searchInput.clearFocus()
         }
     }
 

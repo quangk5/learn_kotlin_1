@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,6 +27,8 @@ import kotlinx.coroutines.launch
 class CartActivity : AppCompatActivity() {
     private val cartApi by lazy { ApiClient.cartApi(this) }
     private var cart: CartResponse? = null
+    private val selectedProductIds = mutableSetOf<String>()
+    private var selectionInitialized = false
     private var firstResume = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,11 +39,20 @@ class CartActivity : AppCompatActivity() {
         findViewById<View>(R.id.cartBack).setOnClickListener { finish() }
         findViewById<View>(R.id.cartClear).setOnClickListener { clearCart() }
         findViewById<View>(R.id.cartCheckout).setOnClickListener {
-            if (cart?.items.orEmpty().isEmpty()) {
-                toast("Giỏ hàng đang trống.")
+            val selected = selectedProductIds.toTypedArray()
+            if (selected.isEmpty()) {
+                toast("Hãy chọn ít nhất một mặt hàng để thanh toán.")
             } else {
-                startActivity(Intent(this, CheckoutActivity::class.java))
+                startActivity(Intent(this, CheckoutActivity::class.java)
+                    .putExtra(CheckoutActivity.EXTRA_SELECTED_PRODUCT_IDS, selected))
             }
+        }
+        findViewById<CheckBox>(R.id.cartSelectAll).setOnCheckedChangeListener { _, checked ->
+            val items = cart?.items.orEmpty()
+            selectedProductIds.clear()
+            if (checked) items.mapNotNullTo(selectedProductIds) { it.productId }
+            renderCartItems(items)
+            updateSelectionSummary(items)
         }
         loadCart()
     }
@@ -66,20 +78,76 @@ class CartActivity : AppCompatActivity() {
     private fun bindCart(result: CartResponse?) {
         cart = result
         val items = result?.items.orEmpty()
+        val itemIds = items.mapNotNull { it.productId }.toSet()
+        if (!selectionInitialized) {
+            selectedProductIds.addAll(itemIds)
+            selectionInitialized = true
+        } else {
+            selectedProductIds.retainAll(itemIds)
+        }
         val container = findViewById<LinearLayout>(R.id.cartItemsContainer)
         container.removeAllViews()
-        findViewById<TextView>(R.id.cartTotal).text = formatVnd(result?.totalAmount)
-        findViewById<View>(R.id.cartCheckout).isEnabled = items.isNotEmpty()
+        findViewById<CheckBox>(R.id.cartSelectAll).apply {
+            setOnCheckedChangeListener(null)
+            isChecked = itemIds.isNotEmpty() && selectedProductIds.containsAll(itemIds)
+            setOnCheckedChangeListener { _, checked ->
+                selectedProductIds.clear()
+                if (checked) selectedProductIds.addAll(itemIds)
+                renderCartItems(items)
+                updateSelectionSummary(items)
+            }
+        }
         if (items.isEmpty()) {
+            updateSelectionSummary(items)
             showStatus("Giỏ hàng của bạn đang trống. Hãy chọn sản phẩm để bắt đầu.")
             return
         }
         showStatus(null)
+        renderCartItems(items)
+        updateSelectionSummary(items)
+    }
+
+    private fun renderCartItems(items: List<CartItemResponse>) {
+        val container = findViewById<LinearLayout>(R.id.cartItemsContainer)
+        container.removeAllViews()
         items.forEach { item -> container.addView(createCartItem(item)) }
+    }
+
+    private fun updateSelectionSummary(items: List<CartItemResponse>) {
+        val selectedItems = items.filter { it.productId in selectedProductIds }
+        val total = selectedItems.sumOf { it.subTotal ?: ((it.unitPrice ?: 0.0) * (it.quantity ?: 1)) }
+        findViewById<TextView>(R.id.cartTotal).text = formatVnd(total)
+        findViewById<TextView>(R.id.cartSelectionCount).text = "${selectedItems.size} món đã chọn"
+        findViewById<View>(R.id.cartCheckout).isEnabled = selectedItems.isNotEmpty()
+        val itemIds = items.mapNotNull { it.productId }.toSet()
+        findViewById<CheckBox>(R.id.cartSelectAll).apply {
+            setOnCheckedChangeListener(null)
+            isChecked = itemIds.isNotEmpty() && selectedProductIds.containsAll(itemIds)
+            setOnCheckedChangeListener { _, checked ->
+                selectedProductIds.clear()
+                if (checked) selectedProductIds.addAll(itemIds)
+                renderCartItems(items)
+                updateSelectionSummary(items)
+            }
+        }
     }
 
     private fun createCartItem(item: CartItemResponse): View {
         val (card, content) = surfaceCard()
+        val productId = item.productId
+        val selection = CheckBox(this).apply {
+            text = "Chọn thanh toán"
+            textSize = 12f
+            isChecked = productId != null && productId in selectedProductIds
+            isEnabled = productId != null
+            setOnCheckedChangeListener { _, checked ->
+                if (productId != null) {
+                    if (checked) selectedProductIds.add(productId) else selectedProductIds.remove(productId)
+                    updateSelectionSummary(cart?.items.orEmpty())
+                }
+            }
+        }
+        content.addView(selection)
         val name = bodyText(item.productName.orEmpty(), 15f, Color.rgb(36, 33, 43), true)
         content.addView(name)
         content.addView(bodyText("${formatVnd(item.unitPrice)} mỗi sản phẩm", 12f, Color.rgb(119, 116, 128)))

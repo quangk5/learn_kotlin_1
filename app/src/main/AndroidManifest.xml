@@ -18,6 +18,8 @@
             android:name=".activity.MainActivity"
             android:exported="false" />
         <activity android:name=".activity.ProductCatalogActivity" android:exported="false" />
+        <activity android:name=".activity.SearchActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.SearchResultsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.ProductDetailActivity" android:exported="false" />
         <activity android:name=".activity.CartActivity" android:exported="false" />
         <activity android:name=".activity.CheckoutActivity" android:exported="false" />

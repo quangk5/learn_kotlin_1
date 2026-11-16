@@ -104,10 +104,24 @@ internal object ScreenLayouts {
     fun cart(context: Context): View = context.column().apply {
         addHeader(context, "Giỏ hàng", R.id.cartBack, context.label("Xóa tất cả", 13f, BRAND).apply { id = R.id.cartClear })
         addView(context.label("", 14f, MUTED).apply { id = R.id.cartStatus; gravity = Gravity.CENTER }, context.matchWrap())
+        addView(context.row().apply {
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(context.dp(18), context.dp(4), context.dp(18), context.dp(4))
+            addView(CheckBox(context).apply {
+                id = R.id.cartSelectAll
+                text = "Chọn tất cả"
+                textSize = 13f
+                setTextColor(INK)
+            }, LinearLayout.LayoutParams(0, -2, 1f))
+            addView(context.label("", 12f, MUTED).apply {
+                id = R.id.cartSelectionCount
+                gravity = Gravity.CENTER_VERTICAL
+            })
+        }, context.matchWrap())
         addView(context.scrollContent(R.id.cartItemsContainer), LinearLayout.LayoutParams(-1, 0, 1f))
         val footer = context.column().apply {
             setPadding(context.dp(18), context.dp(14), context.dp(18), context.dp(16))
-            addView(context.label("Tổng cộng", 13f, MUTED))
+            addView(context.label("Tổng tiền đã chọn", 13f, MUTED))
             addView(context.label("0 ₫", 20f, INK, true).apply { id = R.id.cartTotal }, context.matchWrap().apply { topMargin = context.dp(4) })
             addView(context.actionButton("Tiếp tục đặt hàng", R.id.cartCheckout), context.matchWrap().apply { topMargin = context.dp(12) })
         }
@@ -201,47 +215,90 @@ internal object ScreenLayouts {
     }
 
     fun home(context: Context): View = context.column().apply {
+        addView(context.row().apply {
+            id = R.id.homeHeader
+            setPadding(context.dp(18), context.dp(12), context.dp(18), 0)
+            addView(context.column().apply {
+                addView(context.label("Chào bạn!", 13f, MUTED))
+                addView(context.label("Khám phá cửa hàng", 21f, INK, true).apply { id = R.id.userWelcomeText })
+            }, LinearLayout.LayoutParams(0, -2, 1f))
+            addView(FrameLayout(context).apply {
+                id = R.id.searchToggleButton
+                background = context.roundedColor(Color.WHITE, 16)
+                isClickable = true
+                isFocusable = true
+                contentDescription = "Mở tìm kiếm"
+                addView(ImageView(context).apply {
+                    id = R.id.searchToggleIcon
+                    setImageResource(R.drawable.ic_search_24)
+                    setColorFilter(0xFF5E536A.toInt())
+                    contentDescription = null
+                }, FrameLayout.LayoutParams(context.dp(23), context.dp(23), Gravity.CENTER))
+                addView(context.label("×", 26f, 0xFF5E536A.toInt()).apply {
+                    id = R.id.searchToggleClose
+                    gravity = Gravity.CENTER
+                    visibility = View.GONE
+                }, FrameLayout.LayoutParams(-1, -1))
+            }, LinearLayout.LayoutParams(context.dp(48), context.dp(48)).apply { marginEnd = context.dp(8) })
+            addView(FrameLayout(context).apply {
+                id = R.id.cartButton
+                background = context.roundedGradient(0xFF7652D0.toInt(), 0xFF5739A8.toInt(), 17)
+                isClickable = true
+                isFocusable = true
+                addView(ImageView(context).apply {
+                    setImageResource(R.drawable.ic_shopping_bag_24)
+                    setColorFilter(Color.WHITE)
+                    contentDescription = "Giỏ hàng"
+                }, FrameLayout.LayoutParams(context.dp(25), context.dp(25), Gravity.CENTER))
+                addView(context.label("", 10f, Color.WHITE, true).apply {
+                    id = R.id.cartBadgeText
+                    gravity = Gravity.CENTER
+                    background = context.roundedColor(0xFFE84D72.toInt(), 10)
+                    visibility = View.GONE
+                }, FrameLayout.LayoutParams(context.dp(20), context.dp(20), Gravity.TOP or Gravity.END))
+            }, LinearLayout.LayoutParams(context.dp(48), context.dp(48)).apply { marginEnd = context.dp(8) })
+            addView(FrameLayout(context).apply {
+                id = R.id.notificationButton
+                background = context.roundedColor(Color.WHITE, 16)
+                isClickable = true
+                isFocusable = true
+                addView(ImageView(context).apply {
+                    setImageResource(R.drawable.ic_notifications_24)
+                    setColorFilter(0xFF5E536A.toInt())
+                    contentDescription = "Thông báo"
+                }, FrameLayout.LayoutParams(context.dp(23), context.dp(23), Gravity.CENTER))
+            }, LinearLayout.LayoutParams(context.dp(48), context.dp(48)))
+        })
+        addView(context.row().apply {
+            id = R.id.homeSearchBar
+            gravity = Gravity.CENTER_VERTICAL
+            background = context.roundedColor(Color.WHITE, 14)
+            visibility = View.GONE
+            addView(ImageView(context).apply {
+                setImageResource(R.drawable.ic_search_24)
+                setColorFilter(MUTED)
+                contentDescription = "Tìm kiếm"
+            }, LinearLayout.LayoutParams(context.dp(22), context.dp(22)).apply { marginStart = context.dp(14) })
+            addView(context.input("Tìm sản phẩm", InputType.TYPE_CLASS_TEXT, R.id.searchEditText).apply {
+                imeOptions = EditorInfo.IME_ACTION_SEARCH
+                background = null
+                minHeight = context.dp(52)
+                setPadding(context.dp(10), context.dp(10), context.dp(14), context.dp(10))
+            }, LinearLayout.LayoutParams(0, context.dp(52), 1f))
+            addView(context.label("Xóa toàn bộ", 12f, BRAND, true).apply {
+                id = R.id.searchCloseButton
+                gravity = Gravity.CENTER
+                isClickable = true
+                isFocusable = true
+                contentDescription = "Xóa toàn bộ nội dung tìm kiếm"
+                setPadding(0, 0, context.dp(12), 0)
+            }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, context.dp(52)))
+        }, LinearLayout.LayoutParams(-1, -2).apply { setMargins(context.dp(18), context.dp(12), context.dp(18), context.dp(12)) })
         val scroll = ScrollView(context).apply { id = R.id.homeScrollView; isFillViewport = true; isVerticalScrollBarEnabled = false }
         isFocusableInTouchMode = true
         descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
         scroll.addView(context.column().apply {
-            setPadding(context.dp(18), context.dp(12), context.dp(18), context.dp(24))
-            addView(context.row().apply {
-                id = R.id.homeHeader
-                addView(context.column().apply {
-                    addView(context.label("Chào bạn!", 13f, MUTED))
-                    addView(context.label("Khám phá cửa hàng", 21f, INK, true).apply { id = R.id.userWelcomeText })
-                }, LinearLayout.LayoutParams(0, -2, 1f))
-                addView(FrameLayout(context).apply {
-                    id = R.id.cartButton
-                    background = context.roundedGradient(0xFF7652D0.toInt(), 0xFF5739A8.toInt(), 17)
-                    isClickable = true
-                    isFocusable = true
-                    addView(ImageView(context).apply {
-                        setImageResource(R.drawable.ic_shopping_bag_24)
-                        setColorFilter(Color.WHITE)
-                        contentDescription = "Giỏ hàng"
-                    }, FrameLayout.LayoutParams(context.dp(25), context.dp(25), Gravity.CENTER))
-                    addView(context.label("", 10f, Color.WHITE, true).apply {
-                        id = R.id.cartBadgeText
-                        gravity = Gravity.CENTER
-                        background = context.roundedColor(0xFFE84D72.toInt(), 10)
-                        visibility = View.GONE
-                    }, FrameLayout.LayoutParams(context.dp(20), context.dp(20), Gravity.TOP or Gravity.END))
-                }, LinearLayout.LayoutParams(context.dp(48), context.dp(48)).apply { marginEnd = context.dp(8) })
-                addView(FrameLayout(context).apply {
-                    id = R.id.notificationButton
-                    background = context.roundedColor(Color.WHITE, 16)
-                    isClickable = true
-                    isFocusable = true
-                    addView(ImageView(context).apply {
-                        setImageResource(R.drawable.ic_notifications_24)
-                        setColorFilter(0xFF5E536A.toInt())
-                        contentDescription = "Thông báo"
-                    }, FrameLayout.LayoutParams(context.dp(23), context.dp(23), Gravity.CENTER))
-                }, LinearLayout.LayoutParams(context.dp(48), context.dp(48)))
-            })
-            addView(context.input("Tìm sản phẩm", InputType.TYPE_CLASS_TEXT, R.id.searchEditText).apply { imeOptions = EditorInfo.IME_ACTION_SEARCH }, context.matchWrap().apply { topMargin = context.dp(12) })
+            setPadding(context.dp(18), 0, context.dp(18), context.dp(24))
             addView(context.cardColumn().apply {
                 id = R.id.promotionBanner
                 background = context.roundedGradient(0xFF7450CF.toInt(), 0xFF482B93.toInt(), 24)
@@ -292,6 +349,119 @@ internal object ScreenLayouts {
         addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
         addView(context.bottomNavigation(R.id.navHome), context.matchWrap())
         id = R.id.main
+    }
+
+    fun search(context: Context): View = context.column().apply {
+        id = R.id.main
+        addView(context.row().apply {
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(context.dp(12), context.dp(8), context.dp(16), context.dp(8))
+            addView(context.label("‹", 32f, INK).apply {
+                id = R.id.searchPageBack
+                gravity = Gravity.CENTER
+                contentDescription = "Quay lại"
+                isClickable = true
+            }, LinearLayout.LayoutParams(context.dp(44), context.dp(48)))
+            addView(context.row().apply {
+                gravity = Gravity.CENTER_VERTICAL
+                background = context.roundedColor(Color.WHITE, 14)
+                addView(ImageView(context).apply {
+                    setImageResource(R.drawable.ic_search_24)
+                    setColorFilter(BRAND)
+                    contentDescription = "Tìm kiếm"
+                }, LinearLayout.LayoutParams(context.dp(20), context.dp(20)).apply { marginStart = context.dp(12) })
+                addView(context.input("Bạn muốn tìm gì?", InputType.TYPE_CLASS_TEXT, R.id.searchPageInput).apply {
+                    imeOptions = EditorInfo.IME_ACTION_SEARCH
+                    background = null
+                    minHeight = context.dp(50)
+                    setPadding(context.dp(10), context.dp(8), context.dp(4), context.dp(8))
+                }, LinearLayout.LayoutParams(0, context.dp(50), 1f))
+                addView(context.label("×", 24f, MUTED).apply {
+                    id = R.id.searchPageClear
+                    gravity = Gravity.CENTER
+                    contentDescription = "Xóa từ khóa"
+                    isClickable = true
+                }, LinearLayout.LayoutParams(context.dp(42), context.dp(50)))
+            }, LinearLayout.LayoutParams(0, -2, 1f))
+        })
+        addView(context.label("Tìm kiếm sản phẩm", 22f, INK, true), context.matchWrap().apply {
+            setMargins(context.dp(20), context.dp(12), context.dp(20), context.dp(4))
+        })
+        addView(context.label("Nhập tên sản phẩm, thương hiệu hoặc danh mục", 13f, MUTED), context.matchWrap().apply {
+            setMargins(context.dp(20), 0, context.dp(20), context.dp(16))
+        })
+        addView(context.label("Tìm kiếm phổ biến", 15f, INK, true), context.matchWrap().apply {
+            setMargins(context.dp(20), 0, context.dp(20), context.dp(8))
+        })
+        addView(HorizontalScrollView(context).apply {
+            isHorizontalScrollBarEnabled = false
+            addView(context.row().apply {
+                id = R.id.searchPageSuggestions
+                listOf("Tai nghe", "Thời trang", "Làm đẹp", "Gia dụng").forEach { term ->
+                    addView(context.outlinedButton(term, View.generateViewId()), context.wrapWrap().apply { marginEnd = context.dp(8) })
+                }
+                setPadding(context.dp(20), 0, context.dp(20), 0)
+            })
+        }, context.matchWrap())
+        addView(context.label("", 13f, MUTED).apply {
+            id = R.id.searchPageStatus
+            gravity = Gravity.CENTER
+            setPadding(context.dp(20), context.dp(16), context.dp(20), context.dp(8))
+        }, context.matchWrap())
+        val scroll = ScrollView(context).apply { isFillViewport = true; isVerticalScrollBarEnabled = false }
+        scroll.addView(context.column().apply {
+            id = R.id.searchPageResults
+            setPadding(context.dp(16), context.dp(4), context.dp(16), context.dp(24))
+        })
+        addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
+    }
+
+    fun searchResults(context: Context): View = context.column().apply {
+        id = R.id.main
+        addView(context.row().apply {
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(context.dp(12), context.dp(8), context.dp(18), context.dp(8))
+            addView(context.label("‹", 32f, INK).apply {
+                id = R.id.searchResultsBack
+                gravity = Gravity.CENTER
+                contentDescription = "Quay lại tìm kiếm"
+                isClickable = true
+            }, LinearLayout.LayoutParams(context.dp(44), context.dp(48)))
+            addView(context.label("Kết quả tìm kiếm", 19f, INK, true), LinearLayout.LayoutParams(0, -2, 1f))
+        })
+        addView(context.row().apply {
+            gravity = Gravity.CENTER_VERTICAL
+            background = context.roundedColor(Color.WHITE, 14)
+            addView(ImageView(context).apply {
+                setImageResource(R.drawable.ic_search_24)
+                setColorFilter(BRAND)
+                contentDescription = "Tìm kiếm"
+            }, LinearLayout.LayoutParams(context.dp(20), context.dp(20)).apply { marginStart = context.dp(12) })
+            addView(context.input("Tìm sản phẩm", InputType.TYPE_CLASS_TEXT, R.id.searchResultsQuery).apply {
+                imeOptions = EditorInfo.IME_ACTION_SEARCH
+                background = null
+                minHeight = context.dp(50)
+                setPadding(context.dp(10), context.dp(8), context.dp(4), context.dp(8))
+            }, LinearLayout.LayoutParams(0, context.dp(50), 1f))
+            addView(context.label("×", 24f, MUTED).apply {
+                id = R.id.searchResultsClear
+                gravity = Gravity.CENTER
+                contentDescription = "Xóa từ khóa"
+                isClickable = true
+            }, LinearLayout.LayoutParams(context.dp(42), context.dp(50)))
+        }, LinearLayout.LayoutParams(-1, -2).apply {
+            setMargins(context.dp(18), context.dp(6), context.dp(18), context.dp(12))
+        })
+        addView(context.label("", 13f, MUTED).apply {
+            id = R.id.searchResultsStatus
+            setPadding(context.dp(20), context.dp(4), context.dp(20), context.dp(10))
+        }, context.matchWrap())
+        val scroll = ScrollView(context).apply { isFillViewport = true; isVerticalScrollBarEnabled = false }
+        scroll.addView(context.column().apply {
+            id = R.id.searchResultsList
+            setPadding(context.dp(16), context.dp(2), context.dp(16), context.dp(24))
+        })
+        addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
     }
 
     private fun LinearLayout.addSection(context: Context, title: String, action: String, actionId: Int, content: LinearLayout.() -> Unit) {

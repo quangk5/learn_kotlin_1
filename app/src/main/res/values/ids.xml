@@ -28,6 +28,8 @@
     <item type="id" name="cartItemsContainer" />
     <item type="id" name="cartStatus" />
     <item type="id" name="cartTotal" />
+    <item type="id" name="cartSelectAll" />
+    <item type="id" name="cartSelectionCount" />
     <item type="id" name="catalogBack" />
     <item type="id" name="catalogCart" />
     <item type="id" name="catalogCategoryContainer" />
@@ -105,6 +107,22 @@
     <item type="id" name="promotionBanner" />
     <item type="id" name="recommendationBanner" />
     <item type="id" name="searchEditText" />
+    <item type="id" name="homeSearchBar" />
+    <item type="id" name="searchToggleButton" />
+    <item type="id" name="searchCloseButton" />
+    <item type="id" name="searchToggleIcon" />
+    <item type="id" name="searchToggleClose" />
+    <item type="id" name="searchPageBack" />
+    <item type="id" name="searchPageInput" />
+    <item type="id" name="searchPageClear" />
+    <item type="id" name="searchPageStatus" />
+    <item type="id" name="searchPageResults" />
+    <item type="id" name="searchPageSuggestions" />
+    <item type="id" name="searchResultsBack" />
+    <item type="id" name="searchResultsQuery" />
+    <item type="id" name="searchResultsClear" />
+    <item type="id" name="searchResultsStatus" />
+    <item type="id" name="searchResultsList" />
     <item type="id" name="shopNowButton" />
     <item type="id" name="signup" />
     <item type="id" name="textView" />

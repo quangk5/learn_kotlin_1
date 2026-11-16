@@ -24,6 +24,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 class ProfileActivity : AppCompatActivity() {
+    private var rootTabSwipeController: RootTabSwipeController? = null
     private val profileApi by lazy { ApiClient.profileApi(this) }
     private val authApi by lazy { ApiClient.authApi(this) }
     private lateinit var tokenStore: TokenStore
@@ -34,6 +35,7 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(ScreenLayouts.adaptive(this, ScreenLayouts.profile(this)))
+        rootTabSwipeController = RootTabSwipeController(this) { rootTabForSwipe(it, 2) }
         applySystemBarInsets(findViewById(android.R.id.content))
         tokenStore = TokenStore(this)
         findViewById<View>(R.id.profileBack).setOnClickListener { finish() }
@@ -58,6 +60,12 @@ class ProfileActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (firstResume) firstResume = false else loadProfile()
+    }
+
+    override fun dispatchTouchEvent(event: android.view.MotionEvent): Boolean {
+        val handled = super.dispatchTouchEvent(event)
+        rootTabSwipeController?.observe(event)
+        return handled
     }
 
     private fun loadProfile() {
